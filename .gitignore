@@ -4,9 +4,12 @@ vcpkg/
 vcpkg_installed/
 
 __pycache__
-
 .DS_Store
 
+# CLI
+CLI/
+
+# ChampSim code
 tracer/
 test/
 docs/
@@ -16,10 +19,21 @@ branch/
 config/
 inc/
 btb/
-traces/
 replacement/
+src/
 
 global.options
 module.options
+absolute.options 
+
 vcpkg.json
 Makefile
+config.sh
+.csconfig
+.clang-tidy
+.clang-format
+
+CONTRIBUTING.md 
+LICENSE
+CITATION.cff
+*.bib
