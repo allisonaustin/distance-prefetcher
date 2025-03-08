@@ -5,19 +5,21 @@
 #include <bitset>
 #include <cstdint>
 #include <vector>
+#include <unordered_map>
 
 #include "champsim.h"
 #include "modules.h"
 #include "msl/lru_table.h"
 
-class adapt_distance : public champsim::modules::prefetcher
+class adapt_distance : public champsim::modules::prefetcher 
 {
+
   struct block_in_page_extent : champsim::dynamic_extent {
     block_in_page_extent() : dynamic_extent(champsim::data::bits{LOG2_PAGE_SIZE}, champsim::data::bits{LOG2_BLOCK_SIZE}) {}
   };
   using block_in_page = champsim::address_slice<block_in_page_extent>;
 
-public:
+  public:
   static constexpr std::size_t REGION_SETS = 1;
   static constexpr std::size_t REGION_WAYS = 128;
   static constexpr int MAX_DISTANCE = 256;
@@ -37,10 +39,16 @@ public:
   struct ampm_indexer {
     auto operator()(const region_type& entry) const { return entry.vpn; }
   };
+  
+  /* tracking regions of memory */
   champsim::msl::lru_table<region_type, ampm_indexer, ampm_indexer> regions{REGION_SETS, REGION_WAYS};
+  
+  /* storing confidence levels for different pages */
+  std::unordered_map<uint64_t, uint8_t> confidence_table;
 
   bool check_cl_access(champsim::block_number v_addr);
   bool check_cl_prefetch(champsim::block_number v_addr);
+  void update_confidence(champsim::page_number vpn, bool prefetch_success);
 
   template <typename T>
   static auto page_and_offset(T addr) -> std::pair<champsim::page_number, block_in_page>;
@@ -49,8 +57,6 @@ public:
                                     uint32_t metadata_in);
   uint32_t prefetcher_cache_fill(champsim::address addr, long set, long way, uint8_t prefetch, champsim::address evicted_addr, uint32_t metadata_in);
 
-  // void prefetcher_cycle_operate() {}
-  // void prefetcher_final_stats() {}
 };
 
 #endif

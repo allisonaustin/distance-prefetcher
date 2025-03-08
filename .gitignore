@@ -37,3 +37,6 @@ CONTRIBUTING.md
 LICENSE
 CITATION.cff
 *.bib
+
+# Traces 
+*.xz
