@@ -61,7 +61,7 @@ uint32_t adapt_distance::prefetcher_cache_operate(champsim::address addr, champs
     uint8_t max_prefetch_degree = (confidence > 5) ? PREFETCH_DEGREE : 1; // increase prefetch degree if confidence is high
 
     for (auto direction : {1, -1}) {
-        for (int i = 1, prefetches_issued = 0; i <= MAX_DISTANCE && prefetches_issued < PREFETCH_DEGREE; i++) {
+        for (int i = 1, prefetches_issued = 0; i <= MAX_DISTANCE && prefetches_issued < max_prefetch_degree; i++) {
         const auto pos_step_addr = block_addr + (direction * i);
         const auto neg_step_addr = block_addr - (direction * i);
         const auto neg_2step_addr = block_addr - (direction * 2 * i);
